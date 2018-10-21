@@ -38,12 +38,8 @@ class PyLog():
       for line in lines:  
         buf = self.getLinea(line)
         if buf != "":
-          res = self.tratarLinea(typo, buf)
-          if res != {}:
-            self.result.append(res)
-      res = self.tratarLinea(typo, self.buffer)
-      if res != {}:
-            self.result.append(res)
+          self.tratarLinea(typo, buf)
+      self.tratarLinea(typo, self.buffer)
     f.close()
 
   def getLinea(self, next):
@@ -61,7 +57,6 @@ class PyLog():
     self.tratarLineaRec(id, linea, buffer)
     if buffer != {}:
       self.result.append(buffer)
-    return {}
 
   def tratarLineaRec(self, id, linea, result):
     match = re.search(REGEXP_DEFINITIONS[id][0], linea.strip())

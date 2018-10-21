@@ -11,14 +11,12 @@ class Test(TestCase):
         self.pylog = PyLog()
         self.pylog.addRegexFor("wl11_error")
         self.pylog.addRegexFor("wl11_stuck")
-        #elf.pylog.addRegexFor("stuck_info")
 
     def testMain(self):
         assert 1 == 1        
 
     def testReadFile(self):
         self.pylog.tratar("./20181017intrashort.txt")
-        print "json " + json.dumps(self.pylog.result)
         assert self.pylog.numLines == 4
         assert len(self.pylog.result) == 4
         assert self.pylog.result[0]["date"] == "Oct 17, 2018 9:11:01"
@@ -26,6 +24,11 @@ class Test(TestCase):
     def testReadLongFile(self):
         self.pylog.tratar("./20181017intra.txt")
         print self.pylog.numLines
+        text_file = open("Output.txt", "w")
+        text_file.write(json.dumps(self.pylog.result))
+        text_file.close()
+        
+        
 
 
 suite = TestSuite()
