@@ -1,6 +1,25 @@
   #!/bin/bash
 import re
 import json
+#
+# Dict que contiene expresiones regulares para tratar lineas especificas
+# El formato es una tupla con 4 elementos:
+#
+# 0 - La expresion regular que matchea con la linea que queremos tratar
+# 1 - El numero de grupos de la expresion regular
+# 2 - Esta permitido componer expresiones regulares aplicandole nuevas a grupos ya capturados: 
+#     Las expresiones regulares que queremos aplicar a los grupos que tenemos.
+#     Actualmente: si queremos aplicar la expresion que tenemos registrada como "stuck_info"
+#     al grupo 10 de la expresion "wl1_stuck" añadiremos ahi: 
+#
+#           REGEXP_DEFINITIONS[wl11_stuck]= (..., {10, "stuck_info"},...)
+#
+#     Lo que hara el programa es aplicar la expresion regular como se aplica a el resto del
+#     archivo a ese grupo capturado en wll1_stuck.
+# 3 - Nombres que se tomaran para identificar a los grupos
+
+# TODO: Hay una evidente duplicacion entre el campo 1 y el 3.
+# TODO: addRegex(self, name, regexp, length) sobra
 
 REGEXP_DEFINITIONS = {}
 REGEXP_DEFINITIONS["wl11_error"]=(r"####<([\w]{3} [\d]{1,2}, [\d]{4} [\d]{1,2}:[\d]{1,2}:[\d]{1,2}) [^>]+> <Error> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <<anonymous>> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)>",
