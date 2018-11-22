@@ -1,4 +1,5 @@
-  #!/bin/bash
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import re
 import json
 #
@@ -22,6 +23,12 @@ import json
 # TODO: addRegex(self, name, regexp, length) sobra
 
 REGEXP_DEFINITIONS = {}
+INDEX_REGEXP = 0
+INDEX_NUM_GROUPS = 1
+INDEX_SUBREGEXP = 2
+INDEX_COLUMN_NAMES = 3
+INDEX_SUBREGEXP_GROUP = 0
+INDEX_SUBREGEXP_KEY = 1
 REGEXP_DEFINITIONS["wl11_error"]=(r"####<([\w]{3} [\d]{1,2}, [\d]{4} [\d]{1,2}:[\d]{1,2}:[\d]{1,2}) [^>]+> <Error> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <<anonymous>> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)>",
                             11, 
                             {},
@@ -70,21 +77,21 @@ class PyLog():
       self.buffer += next
     return aux
 
-  def tratarLinea(self, id, linea):
+  def tratarLinea(self, typo, linea):
     self.numLines += 1
     buffer = {}
-    self.tratarLineaRec(id, linea, buffer)
+    self.tratarLineaRec(typo, linea, buffer)
     if buffer != {}:
       self.result.append(buffer)
 
-  def tratarLineaRec(self, id, linea, result):
-    match = re.search(REGEXP_DEFINITIONS[id][0], linea.strip())
-    names = REGEXP_DEFINITIONS[id][3]
+  def tratarLineaRec(self, typo, linea, result):
+    match = re.search(REGEXP_DEFINITIONS[typo][INDEX_REGEXP], linea.strip())
+    names = REGEXP_DEFINITIONS[typo][INDEX_COLUMN_NAMES]
     subregex = {}
-    if REGEXP_DEFINITIONS[id][2] != {}:
-      subregex = REGEXP_DEFINITIONS[id][2]
+    if REGEXP_DEFINITIONS[typo][INDEX_SUBREGEXP] != {}:
+      subregex = REGEXP_DEFINITIONS[typo][INDEX_SUBREGEXP]
     if match:
-      for i in range(1, REGEXP_DEFINITIONS[id][1]):
+      for i in range(1, REGEXP_DEFINITIONS[typo][INDEX_NUM_GROUPS]):
         if i in subregex.keys():
           subBuffer = {}
           self.tratarLineaRec(subregex[i], match.group(i), subBuffer)

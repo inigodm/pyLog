@@ -24,6 +24,8 @@ class Test(TestCase):
     def testReadLongFile(self):
         self.pylog.tratar("./20181017intra.txt")
         print self.pylog.numLines
+        assert(len(self.pylog.result) == 57)
+        assert(self.pylog.result[56]["stuckinfo"]["thread num"]=="53")
         text_file = open("Output.txt", "w")
         text_file.write(json.dumps(self.pylog.result))
         text_file.close()
