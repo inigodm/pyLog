@@ -32,11 +32,11 @@ INDEX_SUBREGEXP_KEY = 1
 REGEXP_DEFINITIONS["wl11_error"]=(r"####<([\w]{3} [\d]{1,2}, [\d]{4} [\d]{1,2}:[\d]{1,2}:[\d]{1,2}) [^>]+> <Error> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <<anonymous>> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)>",
                             11, 
                             {},
-                            ["date", "level", "serverid","serverinstance", "threadinfo", "1", "2", "-", "BEA-code", "msg"])
+                            ["date", "level", "serverid","serverinstance", "threadinfo", "uno", "dos", "tres", "BEAcode", "msg"])
 REGEXP_DEFINITIONS["wl11_stuck"]=(r"####<([\w]{3} [\d]{1,2}, [\d]{4} [\d]{1,2}:[\d]{1,2}:[\d]{1,2}) [^>]+> <Error> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <<WLS Kernel>> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> <([^>]*)> \{([^}]*)[^>]*>",
                             12,
                             {10: "stuck_info"},
-                            ["date", "level", "serverid","serverinstance", "threadinfo", "1", "2", "-", "BEA-code", "stuckinfo", "trace"]
+                            ["date", "level", "serverid","serverinstance", "threadinfo", "uno", "dos", "tres", "BEAcode", "stuckinfo", "trace"]
                             )
 REGEXP_DEFINITIONS["stuck_info"]=(r"[^\]]* ExecuteThread: '([0-9]*)'[^\[]*\[\n([^\n]*)([^\]]*])\", which is more than the configured time \(StuckThreadMaxTime\) of \"([\d]*)\"",
                             4,
@@ -50,7 +50,7 @@ class PyLog():
     self.id_inicio_linea = inicio_linea
     self.buffer = ""
     self.numLines = 0
-    self.result = []
+    self.result = {}
 
   def tratar(self, filename): 
     for key in self.regexp.keys(): 
@@ -82,7 +82,10 @@ class PyLog():
     buffer = {}
     self.tratarLineaRec(typo, linea, buffer)
     if buffer != {}:
-      self.result.append(buffer)
+      if typo not in self.result.keys():
+        self.result[typo] = []    
+      self.result[typo].append(buffer)
+
 
   def tratarLineaRec(self, typo, linea, result):
     match = re.search(REGEXP_DEFINITIONS[typo][INDEX_REGEXP], linea.strip())
@@ -95,7 +98,7 @@ class PyLog():
         if i in subregex.keys():
           subBuffer = {}
           self.tratarLineaRec(subregex[i], match.group(i), subBuffer)
-          result[names[i-1]] = subBuffer
+          result[subregex[i]] = subBuffer
         else:
           result[names[i-1]] = match.group(i)
     
@@ -108,3 +111,4 @@ class PyLog():
 class Result:
   def __init__(self):
     self.buffer = []
+    
