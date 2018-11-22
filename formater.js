@@ -1,6 +1,8 @@
 var collapsables = ["trace"];
 var subs = {"1":"uno", "2":"dos"}
-vjson.map((item, i) => makeDivsFor(item, i))
+for (key in vjson){
+    makeDivsFor(vjson[key], key);
+}
 
 function makeSeparator(i){
     var dg = $("<div><a class='btn btn-primary' data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>"+
@@ -11,15 +13,20 @@ function makeSeparator(i){
 }
 
 function makeDivsFor(item, i){
+    console.log(i);
+    console.log(item);
+    for (key in item){
+        makeDivsForKey(item[key], i);
+    }
+}
+
+function makeDivsForKey(item, i){
     var divitem = $("#basediv")
     divitem.addClass("basediv");
     separator = makeSeparator(i);
     divitem.append(separator);                
     for (key in item){
         if (item.hasOwnProperty(key)) {
-            if (key in subs){
-                key = subs[key];
-            }
             var dg = $('<div/>');
             dg.addClass("item " + key);                
             dg.append(makeDiv('key ' + key,key,i))

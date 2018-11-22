@@ -27,7 +27,7 @@ class Test(TestCase):
     def testReadLongFile(self):
         self.pylog.tratar("./20181017intra.txt")
         text_file = open("Output.txt", "w")
-        text_file.write(json.dumps(self.pylog.result))
+        text_file.write("var vjson="+json.dumps(self.pylog.result))
         text_file.close()
         assert(len(self.pylog.result.keys()) == 2)
         assert(len(self.pylog.result["wl11_error"]) == 20)
