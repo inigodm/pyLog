@@ -1,5 +1,12 @@
 import os.path
 import sqlite3
+
+def results_as_dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 class DBManager:
   def __init__(self, dbname="log.db"):
     self.conn = sqlite3.connect(dbname)
@@ -9,8 +16,19 @@ class DBManager:
     self.c = self.conn.cursor()
     self.__initTables__(jsonDict)
     self.conn.commit()
+    
+  def queryForDict(self, query):
+    print query
+    self.conn.row_factory = results_as_dict_factory
+    self.c = self.conn.cursor()
+    self.c.execute(query)
+
+  def fetchAll(self):
+    return self.c.fetchall()
+    
+  def close(self):
     self.conn.close()
-  
+
   def __initTables__(self, jsonDict):
     for key in jsonDict.keys():
       print "Creating and filling " + key

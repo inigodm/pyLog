@@ -35,6 +35,7 @@ class Test(TestCase):
         assert(self.pylog.result["wl11_stuck"][36]["stuck_info"]["thread num"]=="53")     
         db = DBManager("test2.db")
         db.addElements(self.pylog.result)
+        db.close()
 
 
     
@@ -52,6 +53,10 @@ class Test(TestCase):
         res['extra'].append({'vala1':'otro 1', 'vaal2':'otro 2', 'data':{'inner':'uno', 'dos':'dos'}})
         res['extra'].append({'vala1':'otro 3', 'vaal2':'otro 4', 'data':{'inner':'tres', 'dos':'cuatro'}})
         db.addElements(res)
+        db.queryForDict("select * from elem1")
+        res = db.fetchAll()
+        assert(res[0]['val2'] == 'valor2')
+        db.close()
         
 
 suite = TestSuite()
